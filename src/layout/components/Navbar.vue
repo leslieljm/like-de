@@ -8,10 +8,30 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+          <el-row>
+            <el-col :span="5" class="avatar">
+              <img src="@/assets/common/user.png" class="user-avatar">
+            </el-col>
+            <el-col :span="14" class="user">
+              <span>欢迎您，admin</span>
+            </el-col>
+            <el-col :span="5" class="logout">
+              <el-tooltip class="item" effect="dark" content="退出登录" placement="bottom">
+                <div>
+                  <span>退出</span>
+                  <i class="el-icon-caret-bottom" />
+                </div>
+              </el-tooltip>
+            </el-col>
+          </el-row>
         </div>
-        <el-dropdown-menu slot="dropdown" class="user-dropdown">
+        <!-- <div class="bottom">
+          <el-tooltip class="item" effect="dark" content="Bottom Center 提示文字" placement="bottom">
+            <span>退出</span>
+            <i class="el-icon-caret-bottom" />
+          </el-tooltip>
+        </div> -->
+        <!-- <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>
               Home
@@ -26,7 +46,7 @@
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">Log Out</span>
           </el-dropdown-item>
-        </el-dropdown-menu>
+        </el-dropdown-menu> -->
       </el-dropdown>
     </div>
   </div>
@@ -96,8 +116,11 @@ export default {
 
   .right-menu {
     float: right;
+    width: 240px;
     height: 100%;
-    line-height: 50px;
+    line-height: 60px;
+    margin-right: 24px;
+    color: #fff;
 
     &:focus {
       outline: none;
@@ -122,28 +145,53 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 30px;
+      font-size: 16px;
+      color: #fff;
+      // margin-right: 30px;
 
       .avatar-wrapper {
-        margin-top: 5px;
+        // margin-top: 5px;
         position: relative;
+
+        .avatar {
+          width: 48px;
+        }
+
+        .user {
+          width: 140px;
+          height: 60px;
+        }
+
+        .logout {
+          /* clear: both;
+          text-align: center; */
+          width: 48px;
+          height: 60px;
+        }
 
         .user-avatar {
           cursor: pointer;
-          width: 40px;
-          height: 40px;
+          vertical-align: middle;
+          width: 35px;
+          height: 35px;
           border-radius: 10px;
         }
 
         .el-icon-caret-bottom {
           cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 25px;
           font-size: 12px;
         }
       }
     }
+
+    /* .bottom {
+      clear: both;
+      text-align: center;
+    } */
+
+    /* .item {
+      margin: 4px;
+    } */
   }
 }
 </style>

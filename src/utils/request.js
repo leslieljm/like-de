@@ -27,7 +27,7 @@ service.interceptors.request.use(config => {
       router.push('/login')
       return Promise.reject(new Error('token 超时'))
     }
-    config.headers.Authorization = `Bearer ${store.getters.token}`
+    config.headers.Authorization = store.getters.token
   }
   return config
 }, error => {
@@ -45,7 +45,6 @@ service.interceptors.response.use(response => {
 }, error => { // 接口未成功
   // 如果响应状态码为401，表示token超时失效：同样清除token和userName且跳转到登录页
   if (error.response && error.response.status === 401) {
-    // console.log('a')
     store.dispatch('user/logout')
     router.push('/login')
     Message.error('token 超时')

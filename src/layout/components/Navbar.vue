@@ -10,10 +10,10 @@
         <div class="avatar-wrapper">
           <el-row>
             <el-col :span="5" class="avatar">
-              <img src="@/assets/common/user.png" class="user-avatar" v-imgerror="defaultImg">
+              <img :src="userInfo.image === null? defaultImg: userInfo.image" class="user-avatar" v-imgerror="defaultImg">
             </el-col>
             <el-col :span="14" class="user">
-              <span>欢迎您，</span>
+              <span>欢迎您，{{$store.getters.userInfo.loginName}}</span>
             </el-col>
             <el-col :span="5" class="logout">
               <el-tooltip class="item" effect="dark" content="退出登录" placement="bottom">
@@ -66,12 +66,14 @@ export default {
     }
   },
   created() {
+    console.log(this.userInfo);
     // this.$store.dispatch('user/getUserInfo', this.$store.getters.userId)
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'userInfo'
     ])
   },
   methods: {

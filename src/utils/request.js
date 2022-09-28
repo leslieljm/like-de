@@ -1,6 +1,15 @@
+import router from '@/router'
 import store from '@/store'
 import axios from 'axios'
 import { Message } from 'element-ui'
+const TimeOut = 7200000
+
+// 定义检查token是否登录的方法
+function checkTokenTimeout() {
+  const nowTimeStamp = Date.now()
+  const gapTime = nowTimeStamp - store.getters.tokenTimeStamp
+  return gapTime > TimeOut // 为true时token超时失效
+}
 
 // 通过axios.create()创建axios实例
 const service = axios.create({
@@ -11,8 +20,13 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(config => {
   // config 请求相关的所有信息
-  // 如果登录了，给所有请求注入token
+  // 如果登录(vuex里有token)了，给所有请求注入token
   if (store.getters.token) {
+    if (checkTokenTimeout()) { // 除了检查有没有登录(有无token)，还要检查token是否超时失效
+      store.dispatch('user/logout')
+      router.push('/login')
+      return Promise.reject(new Error('token 超时'))
+    }
     config.headers.Authorization = `Bearer ${store.getters.token}`
   }
   return config
@@ -29,7 +43,15 @@ service.interceptors.response.use(response => {
   }
   return data
 }, error => { // 接口未成功
-  Message.error(error.message)
+  // 如果响应状态码为401，表示token超时失效：同样清除token和userName且跳转到登录页
+  if (error.response && error.response.status === 401) {
+    // console.log('a')
+    store.dispatch('user/logout')
+    router.push('/login')
+    Message.error('token 超时')
+  } else {
+    Message.error(error.message)
+  }
   return Promise.reject(error)
 })
 

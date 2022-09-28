@@ -6,7 +6,7 @@ import store from './store'
 // 定义一个数组，专门用来放未登录时路由白名单
 const whiteList = ['/login', '/404']
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   if (store.getters.token) {
     if (to.path === '/login') {
       next('/')

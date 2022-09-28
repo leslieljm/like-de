@@ -10,14 +10,14 @@
         <div class="avatar-wrapper">
           <el-row>
             <el-col :span="5" class="avatar">
-              <img src="@/assets/common/user.png" class="user-avatar">
+              <img src="@/assets/common/user.png" class="user-avatar" v-imgerror="defaultImg">
             </el-col>
             <el-col :span="14" class="user">
-              <span>欢迎您，admin</span>
+              <span>欢迎您，</span>
             </el-col>
             <el-col :span="5" class="logout">
               <el-tooltip class="item" effect="dark" content="退出登录" placement="bottom">
-                <div>
+                <div @click="logout">
                   <span>退出</span>
                   <i class="el-icon-caret-bottom" />
                 </div>
@@ -54,13 +54,19 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
+// 导入默认头像
+import defaultImg from '@/assets/common/user.png'
 
 export default {
   components: {
-    Breadcrumb,
-    Hamburger
+  },
+  data() {
+    return {
+      defaultImg
+    }
+  },
+  created() {
+    // this.$store.dispatch('user/getUserInfo', this.$store.getters.userId)
   },
   computed: {
     ...mapGetters([
@@ -73,8 +79,8 @@ export default {
       this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      this.$store.dispatch('user/logout')
+      this.$router.push('/login')
     }
   }
 }
@@ -84,12 +90,15 @@ export default {
 .navbar {
   height: 60px;
   width: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
   position: fixed;
   top: 0;
-  left: 0;
+  right: 0;
+  z-index: 1999;
   /* background: #fff; */
   background-image: url('~@/assets/common/backgroundone.png');
+  background-size: cover;
+  background-repeat: no-repeat;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .logoImg {

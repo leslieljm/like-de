@@ -19,7 +19,7 @@ const store = new Vuex.Store({
   plugins: [
     createPersistedState({
       key: 'like-de',
-      paths: ['user.token']
+      paths: ['user.token', 'user.tokenTimeStamp', 'user.userId']
       /* reducer(state) {
         return {
           user: state.user.token

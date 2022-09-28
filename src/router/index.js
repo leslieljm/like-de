@@ -1,7 +1,19 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+// 引入动态路由规则
+import nodeRouter from './modules/node'
+import orderRouter from './modules/order'
+import policyRouter from './modules/policy'
+import reportRouter from './modules/report'
+import skuRouter from './modules/sku'
+import taskRouter from './modules/task'
+import userRouter from './modules/user'
+import vmRouter from './modules/vm'
 
 Vue.use(Router)
+
+// 定义动态路由数组。把动态路由和静态路由分开定义
+const asyncRoutes = [taskRouter, nodeRouter, vmRouter, userRouter, skuRouter, policyRouter, orderRouter, reportRouter]
 
 /* Layout */
 import Layout from '@/layout'
@@ -46,12 +58,12 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/home',
     children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
+      path: 'home',
+      name: 'home',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '帝可得', icon: 'el-icon-s-home' }
     }]
   },
 
@@ -62,7 +74,7 @@ export const constantRoutes = [
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+  routes: [...constantRoutes, ...asyncRoutes]
 })
 
 const router = createRouter()

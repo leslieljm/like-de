@@ -1,11 +1,12 @@
 <template>
-  <div :class="classObj" class="app-wrapper">
+  <div class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+    <!-- <div :class="{'fixed-header':fixedHeader}">
+      <navbar />
+    </div> -->
+    <navbar />
     <sidebar class="sidebar-container" />
     <div class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
-        <navbar />
-      </div>
       <app-main />
     </div>
   </div>
@@ -23,6 +24,9 @@ export default {
     AppMain
   },
   mixins: [ResizeMixin],
+  created() {
+    // this.$store.dispatch('user/getUserInfo', this.$store.getters.userId)
+  },
   computed: {
     sidebar() {
       return this.$store.state.app.sidebar

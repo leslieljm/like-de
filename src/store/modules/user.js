@@ -1,90 +1,42 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
+import { loginAPI, getUserInfoAPI } from '@/api'
 
-const getDefaultState = () => {
-  return {
-    token: getToken(),
-    name: '',
-    avatar: ''
-  }
+const state = {
+  token: null,
+  userId: null,
+  tokenTimeStamp: 0,
+  userInfo: null
 }
 
-const state = getDefaultState()
-
 const mutations = {
-  RESET_STATE: (state) => {
-    Object.assign(state, getDefaultState())
+  SET_TOKEN_USERNAME(state, data) {
+    state.token = data.token
+    state.userId = data.userId
   },
-  SET_TOKEN: (state, token) => {
-    state.token = token
+  SET_TOKEN_TIMESTAMP(state, tokenTimeStamp) {
+    state.tokenTimeStamp = tokenTimeStamp
   },
-  SET_NAME: (state, name) => {
-    state.name = name
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_USERINFO(state, userInfo) {
+    state.userInfo = userInfo
   }
 }
 
 const actions = {
-  // user login
-  login({ commit }, userInfo) {
-    const { username, password } = userInfo
-    return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
+  // 登录请求
+  async login({ commit }, loginForm) {
+    const data = await loginAPI(loginForm)
+    console.log(data)
+    commit('SET_TOKEN_USERNAME', data)
+    commit('SET_TOKEN_TIMESTAMP', +new Date())
   },
-
-  // get user info
-  getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          return reject('Verification failed, please Login again.')
-        }
-
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
+  // 退出登录：清除token和userName。把退出登录清除token和userName写在vuex里，且路由跳转放外面，因为很有可能其它地方要用到清除token但并不伴随着路由跳转
+  logout({ commit }) {
+    commit('SET_TOKEN_USERNAME', { token: null, userName: '' })
+    commit('SET_USERINFO', null)
   },
-
-  // user logout
-  logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        removeToken() // must remove  token  first
-        resetRouter()
-        commit('RESET_STATE')
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-
-  // remove token
-  resetToken({ commit }) {
-    return new Promise(resolve => {
-      removeToken() // must remove  token  first
-      commit('RESET_STATE')
-      resolve()
-    })
+  // 获取用户信息请求
+  async getUserInfo({ commit }, userId) {
+    const data = await getUserInfoAPI(userId)
+    commit('SET_USERINFO', data)
   }
 }
 
